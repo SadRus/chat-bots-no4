@@ -19,14 +19,14 @@ from quiz import create_quiz
 
 quiz_questions = create_quiz()
 
-start_keyboard = [
-    ['Новый вопрос', 'Сдаться'],
-    ['Мой счет'],
-]
-reply_markup = telegram.ReplyKeyboardMarkup(start_keyboard)
-
 
 def start(update, context):
+    start_keyboard = [
+        ['Новый вопрос', 'Сдаться'],
+        ['Мой счет'],
+    ]
+    reply_markup = telegram.ReplyKeyboardMarkup(start_keyboard)
+
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text='Hello, squizers!',
@@ -73,7 +73,7 @@ def get_statistic(update, context):
 def surrender(update, context, db):
     right_answer = context.user_data['right_answer']
     update.message.reply_text(
-        f'Правильный ответ {right_answer}'
+        f'Правильный ответ: {right_answer}'
     )
     return handle_new_question_request(update, context, db)
 
@@ -93,24 +93,25 @@ def main():
 
     conv_handler = ConversationHandler(
         entry_points=[
-            CommandHandler('start', start)
+            MessageHandler(Filters.regex('^Новый вопрос$'),
+                           partial(handle_new_question_request, db=quiz_storage)),
         ],
         states={
-            State.MAIN_MENU: [
-                MessageHandler(Filters.regex('^Новый вопрос$'),
-                               partial(handle_new_question_request, db=quiz_storage)),
-                MessageHandler(Filters.regex('^Мой счет$'), get_statistic)
-            ],
             State.ANSWER: [
                 MessageHandler(Filters.regex('^Сдаться$'),
                                partial(surrender, db=quiz_storage)),
                 MessageHandler(Filters.text & ~Filters.command,
                                partial(handle_solution_attempt, db=quiz_storage)),
             ],
+            State.MAIN_MENU: [
+                MessageHandler(Filters.regex('^Мой счет$'), get_statistic)
+            ],
         },
-        fallbacks=[CommandHandler('start', start)]
+        fallbacks=[CommandHandler('start', start)],
+        allow_reentry=True,
     )
 
+    dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(conv_handler)
 
     updater.start_polling()

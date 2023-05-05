@@ -1,21 +1,25 @@
-from pprint import pprint
+import glob
+import os
+
+from dotenv import load_dotenv
 
 
-with open('./quiz-questions/1vs1201.txt', 'r', encoding='KOI8-R') as file:
-    text = file.read()
+def create_quiz():
+    load_dotenv()
 
-# for text in text.split('\n\n'):
-    # print(text)
-    # print()
-quiz_content = text.split('\n\n')
-#print(text)
-quiz = {}
+    quiz_file_paths = glob.glob(
+        f'{os.getenv("QUIZ_QUESTIONS_PATH")}*.txt',
+    )
+    quiz_questions = {}
+    for path in quiz_file_paths:
+        with open(path, 'r', encoding='KOI8-R') as file:
+            quiz_content = file.read()
 
-for text in quiz_content:
-    if 'вопрос' in text.lower():
-        question = text
-    if 'ответ' in text.lower():
-        answer = text
-        quiz[question] = answer
-
-pprint(quiz)
+        quiz_content = quiz_content.split('\n\n')
+        for text in quiz_content:
+            if text.lower().startswith('вопрос'):
+                question = text
+            if text.lower().startswith('ответ'):
+                answer = text.split('\n')[1]#.strip('"')
+                quiz_questions[question] = answer
+    return quiz_questions

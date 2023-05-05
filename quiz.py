@@ -1,12 +1,8 @@
 import glob
 import os
 
-from dotenv import load_dotenv
-
 
 def create_quiz():
-    load_dotenv()
-
     quiz_file_paths = glob.glob(
         f'{os.getenv("QUIZ_QUESTIONS_PATH")}*.txt',
     )
@@ -20,6 +16,6 @@ def create_quiz():
             if text.lower().startswith('вопрос'):
                 question = text
             if text.lower().startswith('ответ'):
-                answer = text.split('\n')[1]#.strip('"')
+                answer = text.split('\n')[1]
                 quiz_questions[question] = answer
     return quiz_questions

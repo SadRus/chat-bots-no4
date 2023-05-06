@@ -1,3 +1,4 @@
+import logging
 import os
 import random
 import re
@@ -13,8 +14,14 @@ from telegram.ext import (
     MessageHandler,
     Updater,
 )
+
+from create_argparser import create_parser
 from states import State
+from tg_handlers import TelegramLogsHandler
 from quiz import create_quiz
+
+
+logger = logging.getLogger('tg_bot_no4_logger')
 
 
 def start(update, context):
@@ -78,6 +85,12 @@ def cancel(update, context):
 
 def main():
     load_dotenv()
+    parser = create_parser()
+    args = parser.parse_args()
+
+    tg_bot_token = os.getenv('TG_BOT_TOKEN')
+    tg_bot_logger_token = os.getenv('TG_BOT_LOGGER_TOKEN')
+    tg_chat_id = os.getenv('TG_CHAT_ID')
 
     cache = redis.Redis(
         host='localhost',
@@ -85,12 +98,30 @@ def main():
         decode_responses=True,
         db=0,
     )
-    tg_bot_token = os.getenv('TG_BOT_TOKEN')
-    questions = create_quiz()
+
+    tg_bot_logger = telegram.Bot(token=tg_bot_logger_token)
+    logs_full_path = os.path.join(args.dest_folder, 'tg_bot_no4.log')
+    os.makedirs(args.dest_folder, exist_ok=True)
+    logging.basicConfig(
+        level=logging.INFO,
+        filename=logs_full_path,
+        filemode='w',
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    )
+    logger.setLevel(logging.INFO)
+    handler = TelegramLogsHandler(
+        logs_full_path,
+        tg_bot=tg_bot_logger,
+        chat_id=tg_chat_id,
+        maxBytes=args.max_bytes,
+        backupCount=args.backup_count,
+    )
+    logger.addHandler(handler)
 
     updater = Updater(tg_bot_token)
     dispatcher = updater.dispatcher
 
+    questions = create_quiz()
     questions_handler = ConversationHandler(
         entry_points=[
             MessageHandler(Filters.regex('^Новый вопрос$'),
@@ -113,8 +144,11 @@ def main():
     dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(questions_handler)
 
-    updater.start_polling()
-    updater.idle()
+    try:
+        updater.start_polling()
+        logger.info('Telegram chat-bot #4 @dvmnQuizbotbot started')
+    except Exception as e:
+        logger.exception(e)
 
 
 if __name__ == '__main__':

@@ -83,6 +83,7 @@ def main():
         host='localhost',
         port=6379,
         decode_responses=True,
+        db=0,
     )
     tg_bot_token = os.getenv('TG_BOT_TOKEN')
     questions = create_quiz()

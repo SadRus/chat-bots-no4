@@ -84,6 +84,7 @@ def main():
         host='localhost',
         port=6379,
         decode_responses=True,
+        db=1,
     )
 
     vk_group_token = os.getenv('VK_GROUP_TOKEN')

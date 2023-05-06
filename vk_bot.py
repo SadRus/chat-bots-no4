@@ -14,10 +14,10 @@ from quiz import create_quiz
 
 def create_keyboard():
     keyboard = VkKeyboard()
-    keyboard.add_button('Новый вопрос', color=VkKeyboardColor.POSITIVE)
+    keyboard.add_button('Новый вопрос', color=VkKeyboardColor.PRIMARY)
     keyboard.add_button('Сдаться', color=VkKeyboardColor.NEGATIVE)
     keyboard.add_line()
-    keyboard.add_button('Мой счет', color=VkKeyboardColor.PRIMARY)
+    keyboard.add_button('Мой счет')
     return keyboard
 
 

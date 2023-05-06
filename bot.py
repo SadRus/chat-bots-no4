@@ -26,10 +26,11 @@ def start(update, context):
 
     context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text='Hello, squizers!',
+        text='Hello, squizers!\n'
+             'Нажмите "Новый вопрос" для начала викторины.'
+             'Используйте /cancel для отмены',
         reply_markup=reply_markup,
     )
-    return State.MAIN_MENU
 
 
 def handle_new_question_request(update, context, cache, questions):
@@ -57,23 +58,22 @@ def handle_solution_attempt(update, context):
             'Правильно! Поздравляю!'
             'Для следующего вопроса нажми «Новый вопрос»'
         )
-        return State.MAIN_MENU
     else:
         update.message.reply_text(
             'Неправильно… Попробуешь ещё раз?'
         )
 
 
-def get_statistic(update, context):
-    pass
-
-
 def surrender(update, context, cache):
     right_answer = context.user_data['right_answer']
     questions = context.user_data['questions']
-
     update.message.reply_text(f'Правильный ответ: {right_answer}')
     return handle_new_question_request(update, context, cache, questions)
+
+
+def cancel(update, context):
+    update.message.reply_text('Вы завершили викторину')
+    return ConversationHandler.END
 
 
 def main():
@@ -105,11 +105,8 @@ def main():
                 MessageHandler(Filters.text & ~Filters.command,
                                handle_solution_attempt),
             ],
-            State.MAIN_MENU: [
-                MessageHandler(Filters.regex('^Мой счет$'), get_statistic)
-            ],
         },
-        fallbacks=[CommandHandler('start', start)],
+        fallbacks=[CommandHandler('cancel', cancel)],
         allow_reentry=True,
     )
 

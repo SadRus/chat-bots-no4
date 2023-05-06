@@ -2,4 +2,6 @@ from enum import Enum
 
 
 class State(Enum):
-    ANSWER = 0
+    MAIN_MENU = 0
+    QUESTION = 1
+    ANSWER = 2

@@ -64,6 +64,10 @@ def handle_solution_attempt(update, context):
         )
 
 
+def get_statistic(update, context):
+    pass
+
+
 def surrender(update, context, cache):
     right_answer = context.user_data['right_answer']
     questions = context.user_data['questions']
@@ -99,6 +103,9 @@ def main():
                                partial(surrender, cache=cache)),
                 MessageHandler(Filters.text & ~Filters.command,
                                handle_solution_attempt),
+            ],
+            State.MAIN_MENU: [
+                MessageHandler(Filters.regex('^Мой счет$'), get_statistic)
             ],
         },
         fallbacks=[CommandHandler('start', start)],

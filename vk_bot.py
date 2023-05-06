@@ -34,11 +34,10 @@ def handle_new_question_request(event, vk_api, cache, questions):
     user_id = event.user_id
     question = random.choice(list(questions))
     cache.set(user_id, question)
-    right_answer = questions[cache.get(user_id)]
     vk_api.messages.send(
         user_id=user_id,
         random_id=get_random_id(),
-        message=f'{question} \n {right_answer}',
+        message=f'{question}',
         keyboard=create_keyboard().get_keyboard(),
     )
 

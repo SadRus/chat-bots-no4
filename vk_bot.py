@@ -10,6 +10,7 @@ from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.utils import get_random_id
 from quiz import create_quiz
+from db import pool
 
 
 def create_keyboard():
@@ -80,12 +81,12 @@ def surrender(event, vk_api, cache, questions):
 def main():
     load_dotenv()
 
-    pool = redis.ConnectionPool(
-        host='localhost',
-        port=6379,
-        decode_responses=True,
-        db=1,
-    )
+    # pool = redis.ConnectionPool(
+    #     host='localhost',
+    #     port=6379,
+    #     decode_responses=True,
+    #     db=0,
+    # )
     cache = redis.Redis(connection_pool=pool)
 
     vk_group_token = os.getenv('VK_GROUP_TOKEN')

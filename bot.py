@@ -85,7 +85,7 @@ def main():
         decode_responses=True,
     )
     tg_bot_token = os.getenv('TG_BOT_TOKEN')
-    quiz_questions = create_quiz()
+    questions = create_quiz()
 
     updater = Updater(tg_bot_token)
     dispatcher = updater.dispatcher
@@ -95,7 +95,7 @@ def main():
             MessageHandler(Filters.regex('^Новый вопрос$'),
                            partial(handle_new_question_request,
                                    cache=cache,
-                                   questions=quiz_questions)),
+                                   questions=questions)),
         ],
         states={
             State.ANSWER: [

@@ -83,9 +83,18 @@ def main():
     tg_bot_logger_token = os.getenv('TG_BOT_LOGGER_TOKEN')
     tg_chat_id = os.getenv('TG_CHAT_ID')
     vk_group_token = os.getenv('VK_GROUP_TOKEN')
+    host = os.getenv('HOST')
+    port = os.getenv('PORT')
+    vk_db = os.getenv('VK_DB')
+
+    cache = redis.Redis(
+        host=host,
+        port=port,
+        decode_responses=True,
+        db=vk_db,
+    )
 
     tg_bot_logger = telegram.Bot(token=tg_bot_logger_token)
-
     logs_full_path = os.path.join(args.dest_folder, 'vk_bot_no4.log')
     os.makedirs(args.dest_folder, exist_ok=True)
     logging.basicConfig(
@@ -103,12 +112,6 @@ def main():
         backupCount=args.backup_count,
     )
     logger.addHandler(handler)
-    cache = redis.Redis(
-        host='localhost',
-        port=6379,
-        decode_responses=True,
-        db=1,
-    )
 
     vk_group_token = os.getenv('VK_GROUP_TOKEN')
     vk_session = vk.VkApi(token=vk_group_token)

@@ -81,12 +81,15 @@ def main():
     tg_bot_token = os.getenv('TG_BOT_TOKEN')
     tg_bot_logger_token = os.getenv('TG_BOT_LOGGER_TOKEN')
     tg_chat_id = os.getenv('TG_CHAT_ID')
+    host = os.getenv('HOST')
+    port = os.getenv('PORT')
+    tg_db = os.getenv('TG_DB')
 
     cache = redis.Redis(
-        host='localhost',
-        port=6379,
+        host=host,
+        port=port,
         decode_responses=True,
-        db=0,
+        db=tg_db,
     )
 
     tg_bot_logger = telegram.Bot(token=tg_bot_logger_token)

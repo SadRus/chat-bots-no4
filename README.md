@@ -33,7 +33,7 @@ sudo apt-get install redis
 3. For VK bot needed:  
 3.1 Create the group  
 3.2 Get VK group token  
-3.3 Enable messages in the group
+3.3 Enable messages in the group  
 3.4 Enable bot features in the group bot settings
 
 ### Enviroment
@@ -72,15 +72,16 @@ Running example with arguments:
 ### Examples  
 * **Example of a Telegram bot helper**
 
-Bot will answer for a common questions in a private telegram chat  
-link: https://t.me/vo1ce_c1ty_bot  
-![tg_bot](https://user-images.githubusercontent.com/79669407/231001881-74f8416f-0603-46d8-b16c-3ee34cf79be0.gif)  
+Bot will send random quiz questions in a private telegram chat  
+link: https://t.me/dvmnQuizbotbot  
+![1111](https://github.com/SadRus/chat-bots-no4/assets/79669407/27c28e2a-8c0d-4ca8-a975-697d227aff87)
 
 * **Example of a VK group bot**
 
-Bot will answer for a common questions in a private vk chat if you writting in a group chat  
-link: https://vk.com/im?peers=-217501442&sel=c162
-![vk_bot](https://user-images.githubusercontent.com/79669407/231004992-ec2d9add-2bad-4f8f-bd76-7281fe9387d9.gif)
+Bot will send random quiz questions in a private vk chat if you writting in a group chat  
+link: https://vk.com/im?peers=-217501442&sel=c162  
+![image](https://github.com/SadRus/chat-bots-no4/assets/79669407/c7afdb3a-ad15-41b1-a926-4e8a40db6961)
+
 
 ### Deployment on a server
 

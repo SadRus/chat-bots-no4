@@ -9,14 +9,12 @@ from dotenv import load_dotenv
 from functools import partial
 from telegram.ext import (
     CommandHandler,
-    ConversationHandler,
     Filters,
     MessageHandler,
     Updater,
 )
 
 from create_argparser import create_parser
-from states import State
 from tg_handlers import TelegramLogsHandler
 from quiz import create_quiz
 
@@ -33,9 +31,7 @@ def start(update, context):
 
     context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text='Hello, squizers!\n'
-             'Нажмите "Новый вопрос" для начала викторины.'
-             'Используйте /cancel для отмены',
+        text='Hello, squizers!\nНажмите "Новый вопрос" для начала викторины.',
         reply_markup=reply_markup,
     )
 
@@ -53,7 +49,6 @@ def handle_new_question_request(update, context, cache, questions):
     update.message.reply_text(
         f'{question}'
     )
-    return State.ANSWER
 
 
 def handle_solution_attempt(update, context):
@@ -76,11 +71,6 @@ def surrender(update, context, cache):
     questions = context.user_data['questions']
     update.message.reply_text(f'Правильный ответ: {right_answer}')
     return handle_new_question_request(update, context, cache, questions)
-
-
-def cancel(update, context):
-    update.message.reply_text('Вы завершили викторину')
-    return ConversationHandler.END
 
 
 def main():
@@ -122,27 +112,21 @@ def main():
     dispatcher = updater.dispatcher
 
     questions = create_quiz()
-    questions_handler = ConversationHandler(
-        entry_points=[
-            MessageHandler(Filters.regex('^Новый вопрос$'),
-                           partial(handle_new_question_request,
-                                   cache=cache,
-                                   questions=questions)),
-        ],
-        states={
-            State.ANSWER: [
-                MessageHandler(Filters.regex('^Сдаться$'),
-                               partial(surrender, cache=cache)),
-                MessageHandler(Filters.text & ~Filters.command,
-                               handle_solution_attempt),
-            ],
-        },
-        fallbacks=[CommandHandler('cancel', cancel)],
-        allow_reentry=True,
-    )
 
     dispatcher.add_handler(CommandHandler('start', start))
-    dispatcher.add_handler(questions_handler)
+    dispatcher.add_handler(
+        MessageHandler(Filters.regex('^Новый вопрос$'),
+                       partial(handle_new_question_request, cache=cache,
+                               questions=questions))
+    )
+    dispatcher.add_handler(
+        MessageHandler(Filters.regex('^Сдаться$'),
+                       partial(surrender, cache=cache))
+    )
+    dispatcher.add_handler(
+        MessageHandler(Filters.text & ~Filters.command,
+                       handle_solution_attempt)
+    )
 
     try:
         updater.start_polling()

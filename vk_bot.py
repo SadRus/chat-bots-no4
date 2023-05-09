@@ -29,15 +29,6 @@ def create_keyboard():
     return keyboard
 
 
-def echo(event, vk_api):
-    vk_api.messages.send(
-        user_id=event.user_id,
-        random_id=get_random_id(),
-        message=event.text,
-        keyboard=create_keyboard().get_keyboard(),
-    )
-
-
 def handle_new_question_request(event, vk_api, cache, questions):
     user_id = event.user_id
     question = random.choice(list(questions))

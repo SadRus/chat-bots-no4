@@ -83,15 +83,15 @@ def main():
     tg_bot_logger_token = os.getenv('TG_BOT_LOGGER_TOKEN')
     tg_chat_id = os.getenv('TG_CHAT_ID')
     vk_group_token = os.getenv('VK_GROUP_TOKEN')
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-    vk_db = os.getenv('VK_DB')
+    redis_host = os.getenv('REDIS_HOST')
+    redis_port = os.getenv('REDIS_PORT')
+    redis_vk_db = os.getenv('REDIS_VK_DB')
 
     cache = redis.Redis(
-        host=host,
-        port=port,
+        host=redis_host,
+        port=redis_port,
         decode_responses=True,
-        db=vk_db,
+        db=redis_vk_db,
     )
 
     tg_bot_logger = telegram.Bot(token=tg_bot_logger_token)

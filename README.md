@@ -48,10 +48,10 @@ You needs to create .env file for the enviroment variables in main folder.
 - `LOGS_BACKUP_COUNT` - bot logs file backup count
 - `VK_GROUP_TOKEN` - yours vk group token
 - `QUIZ_QUESTIONS_PATH` - path to folder with questions
-- `HOST` - host's ip address (e.g. 'localhost')
-- `PORT` - port (default 6379)
-- `TG_DB` - redis db for telegram bot
-- `VK_DB` - redis db for vk bot
+- `REDIS_HOST` - host's ip address (e.g. 'localhost')
+- `REDIS_PORT` - port (default 6379)
+- `REDIS_TG_DB` - redis db for telegram bot
+- `REDIS_VK_DB` - redis db for vk bot
 
 ### Usage
 Before start the script, needs activate your bot via `/start` command in chat.
